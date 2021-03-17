@@ -11,10 +11,11 @@ public class QueueService implements Service {
     public Resp process(Req req) {
         if (req.getMethod().equals("GET")) {
             responses.putIfAbsent(req.getMode(), new ConcurrentLinkedQueue<>());
-            if (responses.get(req.getMethod()).poll() == null) {
+            Resp response = responses.get(req.getMethod()).poll();
+            if (response == null) {
                 return new Resp("Response body is empty", 200);
             }
-            return responses.get(req.getMode()).poll();
+            return response;
         } else if (req.getMethod().equals("POST")) {
             responses.putIfAbsent(req.getMode(), new ConcurrentLinkedQueue<>());
             Resp response = new Resp(req.getText(), 200);
