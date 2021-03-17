@@ -14,10 +14,11 @@ public class TopicService implements Service {
             Map<Integer, ConcurrentLinkedQueue<Resp>> idQueuePairs =
                     responses.computeIfAbsent(req.getMode(), e -> new ConcurrentHashMap<>());
             idQueuePairs.putIfAbsent(req.getId(), new ConcurrentLinkedQueue<>());
-            if (responses.get(req.getMode()).get(req.getId()).poll() == null) {
+            Resp response = responses.get(req.getMode()).get(req.getId()).poll();
+            if (response == null) {
                 return new Resp("Response body is empty", 200);
             }
-            return responses.get(req.getMode()).get(req.getId()).poll();
+            return response;
         } else if (req.getMethod().equals("POST")) {
             Resp response = new Resp(req.getText(), 200);
             if (responses.computeIfPresent(
